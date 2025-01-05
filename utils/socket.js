@@ -2,7 +2,7 @@
 
 import { io } from "socket.io-client";
 
-const URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
+const URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 const socket = io(URL, {
   withCredentials: true,
   transports: ["websocket", "polling"], // Ensure multiple transport methods
