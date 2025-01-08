@@ -8,73 +8,89 @@ import Button from "../Button";
 import Input from "../Input";
 import { useEffect, useRef, useState } from "react";
 import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+
 import Avatar from "../Avatar";
 import socket from "../../../../utils/socket";
 
 export default function ChatLayout({ className = "", defaultLayout = [15, 85], ...props }) {
+  const [isCollapsed, setIsCollapsed] = useState(false); // For sidebar collapse
+  const [messages, setMessages] = useState([]); //  For message list
+  const [message, setMessage] = useState(""); // For message input
+  const [currentUser, setCurrentUser] = useState(null); //  For user identification
+
+  // Layout handlers
   function onLayout(sizes) {
     document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`;
   }
-  const [isCollapsed, setIsCollapsed] = useState(false);
   function onCollapse() {
     setIsCollapsed(true);
   }
-
   function onExpand() {
     setIsCollapsed(false);
   }
-  //SOCKET LOGIC
-  const [isConnected, setIsConnected] = useState(false);
-  const [transport, setTransport] = useState("N/A");
-  // HTTP long-polling ("polling")
-  // WebSocket ("websocket")
-  // WebTransport ("webtransport")
-  useEffect(() => {
-    if (socket.connected) {
-      onConnect();
-    }
-    function onConnect() {
-      setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
 
-      socket.io.engine.on("upgrade", (transport) => {
-        setTransport(transport.name);
-      });
-    }
-    function onDisconnect() {
-      setIsConnected(false);
-      setTransport("N/A");
-    }
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-    };
-  }, []);
+  // // Message handling
+  // useEffect(() => {
+  //   // Load initial messages
+  //   socket.emit("load-new-messages");
 
-  //Message logic
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  useEffect(() => {
-    socket.on("receive-message", (messageData) => {
-      setMessages((prev) => [...prev, messageData]);
-    });
-    return () => {
-      socket.off("receive-message");
-    };
-  }, []);
-  const sendMessage = () => {
-    const messageData = {
-      content: message,
-      senderId: socket.id, // Include sender's ID
-      timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-    };
-    // console.log("sending message", message);
-    socket.emit("send-message", messageData);
-    setMessages((prev) => [...prev, messageData]);
-    setMessage("");
-  };
+  //   function onNewMessagesLoaded(loadedMessages) {
+  //     setMessages(loadedMessages);
+  //   }
+
+  //   function onReceiveMessage(newMessage) {
+  //     setMessages((prev) => [newMessage, ...prev]);
+  //   }
+  //   function onMessageError(error) {
+  //     console.error("Message error:", error?.error || error?.message || error);
+  //   }
+  //   socket.on("new-messages-loaded", onNewMessagesLoaded);
+  //   socket.on("receive-message", onReceiveMessage);
+  //   socket.on("message-error", onMessageError);
+
+  //   return () => {
+  //     socket.off("new-messages-loaded", onNewMessagesLoaded);
+  //     socket.off("receive-message", onReceiveMessage);
+  //     socket.off("message-error", onMessageError);
+  //   };
+  // }, []);
+
+  // // Send message function
+  // const sendMessage = () => {
+  //   if (!message.trim()) return;
+
+  //   const messageData = {
+  //     userId: currentUser?.id || socket.id,
+  //     content: message,
+  //     // created_at: new Date().toISOString(),
+  //   };
+
+  //   socket.emit("send-message", messageData);
+  //   const futureMessage = {
+  //     message_id: Date.now(),
+  //     content: message,
+  //     created_at: new Date().toISOString(),
+  //     senderId: socket.id,
+  //     users: {
+  //       display_name: currentUser?.display_name || "Me",
+  //     },
+  //   };
+  //   setMessages((prev) => [futureMessage, ...prev]);
+  //   setMessage("");
+  // };
+
+  // // Load older messages on scroll
+  // const loadOlderMessagesOnScroll = () => {
+  //   if (messages.length === 0) return;
+
+  //   const oldestMessage = messages[messages.length - 1];
+  //   socket.once("old-messages-loaded", (olderMessages) => {
+  //     setMessages((prev) => [...prev, ...olderMessages]);
+  //   });
+  //   socket.emit("load-old-messages", {
+  //     lastTimestamp: oldestMessage.created_at,
+  //   });
+  // };
 
   return (
     <div
@@ -144,29 +160,31 @@ export default function ChatLayout({ className = "", defaultLayout = [15, 85], .
               </Button>
             </ChatHeader>
 
-            <ChatMessages className="flex-1 overflow-hidden">
-              {messages.map((msg, index) => (
-                <ChatMessage
-                  isSidebarCollapsed={isCollapsed}
-                  key={index}
-                  isMine={msg.senderId === socket.id}
-                  timeProp={msg.timestamp}
-                >
-                  {msg.content}
-                </ChatMessage>
-              ))}
-            </ChatMessages>
+            <ChatMessages
+              className="flex-1 overflow-hidden"
+              // messages={messages}
+              // onLoadMore={loadOlderMessagesOnScroll}
+              isSidebarCollapsed={isCollapsed}
+            ></ChatMessages>
 
             <ChatInput>
               <Input
-                value={message}
+                // value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    // sendMessage();
+                  }
                 }}
                 className="w-full"
                 placeholder="Type a message..."
               ></Input>
-              <Button onClick={sendMessage}>
+              <Button
+              // onClick={sendMessage}
+              >
                 <svg
                   className="fill-svg_color"
                   xmlns="http://www.w3.org/2000/svg"

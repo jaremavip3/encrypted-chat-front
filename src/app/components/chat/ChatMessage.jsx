@@ -2,18 +2,21 @@ import Avatar from "../Avatar";
 import { useState } from "react";
 
 export default function ChatMessage({
-  children,
-  className = "",
-  isSidebarCollapsed,
-  isMine = false,
+  userId = "",
+  content = "",
+  createdAt = "",
+  isEdited = false,
   timeProp = "",
-  ...props
+  children,
+  isMine = false,
+  isSidebarCollapsed = false,
+  displayName = "Unknown User",
+  className = "",
 }) {
   return (
     <div
       className={` flex ${isMine ? "justify-end" : "justify-start"} }
            ${className}`}
-      {...props}
     >
       <div className={`flex flex-1 align-middle py-4 px-4  gap-2   min-w-0 ${isSidebarCollapsed ? "max-w-[90%]" : ""}`}>
         {isMine ? (
@@ -40,7 +43,7 @@ export default function ChatMessage({
           }`}
         >
           <div className="flex flex-wrap justify-between align-top gap-2 ">
-            <div className="font-extrabold text-yellow-600 ">Pavlo Vilkhovui</div>
+            <div className="font-extrabold text-yellow-600 ">{displayName}</div>
             <div className={`${isMine ? "text-my_text" : "text-text"}`}>{timeProp}</div>
           </div>
           <div className={` py-2.5 break-all whitespace-pre-wrap  ${isMine ? "text-my_text" : "text-text "}`}>
