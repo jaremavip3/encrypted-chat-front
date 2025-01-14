@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createSession, deleteSession } from "./sessions";
 import { redirect } from "next/navigation";
 
-const API_BASE_URL = "https://encrypted-chat-app-zrlv.onrender.com/api";
+const API_BASE_URL = "https://encrypted-chat-app-zrlv.onrender.com";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }).trim(),
@@ -23,7 +23,7 @@ export async function login(prevState, formData) {
       password: formData.get("password"),
     };
 
-    const response = await fetch(`${API_BASE_URL}/users/login`, {
+    const response = await fetch(`${API_BASE_URL}/api/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export async function register(prevState, formData) {
       displayName: formData.get("name"),
     };
 
-    const response = await fetch(`${API_BASE_URL}/users/register`, {
+    const response = await fetch(`${API_BASE_URL}/api/users/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
