@@ -1,25 +1,28 @@
 export async function GET(req) {
   try {
-    const body = await req.json();
+    const { searchParams } = new URL(req.url);
+    const action = searchParams.get("action");
 
     let endpoint = undefined;
-    if (body.action === "get_byEmail") {
-      endpoint = "/email/:email";
+    const params = {};
+    if (action === "get_byEmail") {
+      const email = searchParams.get("email");
+      endpoint = `/users/email/${email}`;
     }
-    if (body.action === "get_byId") {
-      endpoint = "/id/:id";
+    if (action === "get_byId") {
+      const id = searchParams.get("id");
+      endpoint = `/users/id/${id}`;
     }
-    if (body.action === "get_byGoogleId") {
-      endpoint = "/:googleId";
+    if (action === `get_byGoogleId`) {
+      const googleId = searchParams.get("googleId");
+      endpoint = `/${googleId}`;
     }
 
-    console.log("body: ", body);
-    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com" + endpoint, {
-      method: "POST",
+    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api" + endpoint, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
     });
     const result = await response.json();
 

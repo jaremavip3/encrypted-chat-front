@@ -39,7 +39,7 @@ export async function login(prevState, formData) {
     }
     console.log("Login response data:", data);
     await createSession(data.data.user_id);
-    return { status: "success" };
+    return { status: "success", userData: data.data };
   } catch (error) {
     console.log("Login error:", error);
     return { status: "error", message: "Connection error. Please try again." };
