@@ -75,7 +75,7 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
           {isCollapsed ? (
             <div className="flex flex-col space-y-4 items-center py-4">
               {activeUsers.map((user) => {
-                return <Avatar key={user.user_id} src={user.profile_picture_url} alt={user.display_name}></Avatar>;
+                return <Avatar key={user.user_id} src={user.profile_picture_url} alt={user.display_name} />;
               })}
             </div>
           ) : (
