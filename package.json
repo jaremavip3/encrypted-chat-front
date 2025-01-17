@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/react": "^2.6.13",
     "@socket.io/admin-ui": "^0.5.1",
     "jose": "^5.9.6",
     "next": "15.1.3",

@@ -1,44 +1,55 @@
-// import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react";
+import Image from "next/image";
 
-// export default function LogoSelector() {
-//   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export const LogoIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={height}
+      viewBox="0 -960 960 960"
+      width={width}
+      fill="#a1a1aa"
+      {...props}
+    >
+      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+    </svg>
+  );
+};
 
-//   return (
-//     <>
-//       <Button onPress={onOpen}>Select Logo</Button>
-//       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-//         <ModalContent>
-//           {(onClose) => (
-//             <>
-//               <ModalHeader className="flex flex-col gap-1">Select Logo</ModalHeader>
-//               <ModalBody>
-//                 <p>
-//                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit
-//                   venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam.
-//                 </p>
-//                 <p>
-//                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non risus hendrerit
-//                   venenatis. Pellentesque sit amet hendrerit risus, sed porttitor quam.
-//                 </p>
-//                 <p>
-//                   Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit dolor adipisicing. Mollit
-//                   dolor eiusmod sunt ex incididunt cillum quis. Velit duis sit officia eiusmod Lorem aliqua enim laboris
-//                   do dolor eiusmod. Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur proident Lorem
-//                   eiusmod et. Culpa deserunt nostrud ad veniam.
-//                 </p>
-//               </ModalBody>
-//               <ModalFooter>
-//                 <Button color="danger" variant="light" onPress={onClose}>
-//                   Close
-//                 </Button>
-//                 <Button color="primary" onPress={onClose}>
-//                   Action
-//                 </Button>
-//               </ModalFooter>
-//             </>
-//           )}
-//         </ModalContent>
-//       </Modal>
-//     </>
-//   );
-// }
+export default function LogoSelector() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  return (
+    <>
+      <Button onPress={onOpen} isIconOnly aria-label="Take a photo" color="warning" variant="faded">
+        <LogoIcon className="hover:fill-white rounded-full bg-background border-2 border-solid border-border_color " />
+      </Button>
+
+      <Modal
+        className="bg-background text-white border-2 border-solid border-border_color"
+        backdrop="blur"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 ">Select Logo</ModalHeader>
+              <ModalBody className="flex flex-wrap gap-2">
+                <Image src="/images/avatars/bear.png" alt="Bear Logo" fill className="object-contain p-2" />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}

@@ -3,6 +3,7 @@ import { useFormState, useEffect, useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { register } from "../../../../utils/actions";
 import { useRouter } from "next/navigation";
+import LogoSelector from "@/app/components/LogoSelector";
 
 export default function RegisterPage() {
   const [password1, setPassword1] = useState("");
@@ -106,19 +107,7 @@ export default function RegisterPage() {
           <label htmlFor="name" className="text-gray-300 pl-2 ">
             Choose logo
           </label>
-
-          <div className="w-10 h-10 rounded-2xl bg-background border-2 border-solid border-border_color hover:bg-button_hover">
-            <svg
-              className="h-full w-full hover:fill-white"
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              fill="#a1a1aa"
-            >
-              <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
-            </svg>
-          </div>
+          <LogoSelector />
         </div>
         <button
           type="submit"
