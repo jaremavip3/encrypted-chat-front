@@ -22,7 +22,7 @@ export default async function Home() {
       console.error("Failed to retrive session information: ", error.message);
     }
   }
-
+  //API TO BE UPDATED_____________________________________________________________________
   if (userId) {
     const response = await fetch(`https://encrypted-chat-front.vercel.app/api/user?action=get_byId&id=${userId}`, {
       method: "GET",
