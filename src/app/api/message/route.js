@@ -1,16 +1,25 @@
 //get new messages
 export async function GET(req) {
+  const url = new URL(req.url);
+  const limit = url.searchParams.get("limit") || 10;
+  const lastTimestamp = url.searchParams.get("lastTimestamp") || "";
   try {
-    const body = await req.json();
-    console.log("body: ", body);
-    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await fetch(
+      `https://encrypted-chat-app-zrlv.onrender.com/api/messages?limit=${limit}&lastTimestamp=${lastTimestamp}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const result = await response.json();
+    // if (response.ok && result.data.length === 0) {
+    //   return new Response(JSON.stringify(result), {
+    //     status: 204,
+    //     headers: { "Content-Type": "application/json" },
+    //   });
+    // }
 
     return new Response(JSON.stringify(result), {
       status: response.status,
@@ -26,7 +35,7 @@ export async function POST(req) {
   try {
     const body = await req.json();
     console.log("body: ", body);
-    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/", {
+    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,8 +58,8 @@ export async function PUT(req) {
   try {
     const body = await req.json();
     console.log("body: ", body);
-    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/", {
-      method: "POST",
+    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/messages", {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -72,8 +81,8 @@ export async function DELETE(req) {
   try {
     const body = await req.json();
     console.log("body: ", body);
-    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/", {
-      method: "POST",
+    const response = await fetch("https://encrypted-chat-app-zrlv.onrender.com/api/messages", {
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },

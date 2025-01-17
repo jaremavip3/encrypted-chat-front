@@ -47,7 +47,7 @@ export default function RegisterPage() {
       </div>
       <form
         action={registerAction}
-        className="flex flex-col gap-6 bg-bg_surface_dark p-8 rounded-2xl border-2 border-solid border-border_color"
+        className="flex flex-col gap-3 bg-bg_surface_dark p-8 rounded-2xl border-2 border-solid border-border_color"
       >
         <div className="flex flex-col gap-2 ">
           <label htmlFor="email" className="text-gray-300 pl-2">
@@ -101,6 +101,24 @@ export default function RegisterPage() {
             placeholder="Confirm your password"
             className="p-4 h-12 text-text rounded-3xl bg-background border-2 border-solid border-border_color focus:border-my_text_background focus:outline-none"
           ></input>
+        </div>
+        <div className="flex flex-col gap-2 justify-center items-center">
+          <label htmlFor="name" className="text-gray-300 pl-2 ">
+            Choose logo
+          </label>
+
+          <div className="w-10 h-10 rounded-2xl bg-background border-2 border-solid border-border_color hover:bg-button_hover">
+            <svg
+              className="h-full w-full hover:fill-white"
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#a1a1aa"
+            >
+              <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+            </svg>
+          </div>
         </div>
         <button
           type="submit"

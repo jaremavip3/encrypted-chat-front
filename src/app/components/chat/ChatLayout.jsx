@@ -12,7 +12,7 @@ import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from "rea
 import Avatar from "../Avatar";
 import socket from "../../../../utils/socket";
 
-export default function ChatLayout({ className = "", defaultLayout = [15, 85], ...props }) {
+export default function ChatLayout({ userData, className = "", defaultLayout = [15, 85], ...props }) {
   const [isCollapsed, setIsCollapsed] = useState(false); // For sidebar collapse
   const [messages, setMessages] = useState([]); //  For message list
   const [message, setMessage] = useState(""); // For message input
@@ -145,7 +145,7 @@ export default function ChatLayout({ className = "", defaultLayout = [15, 85], .
         <Panel defaultSize={defaultLayout[1]}>
           <div id="chat-container" className="flex flex-col h-full">
             <ChatHeader>
-              ChatHeader
+              {userData.display_name}
               <Button>
                 <svg
                   className="fill-svg_color"
@@ -161,9 +161,11 @@ export default function ChatLayout({ className = "", defaultLayout = [15, 85], .
             </ChatHeader>
 
             <ChatMessages
+              userData={userData}
               className="flex-1 overflow-hidden"
               // messages={messages}
               // onLoadMore={loadOlderMessagesOnScroll}
+
               isSidebarCollapsed={isCollapsed}
             ></ChatMessages>
 

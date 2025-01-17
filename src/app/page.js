@@ -6,12 +6,14 @@ import { decrypt } from "../../utils/sessions.js";
 import { getServerSession } from "next-auth";
 import LoginPage from "./auth/login/page.js";
 import Logout from "./components/Logout.jsx";
-import { unstable_cache } from "next/cache";
 
 export default async function Home() {
   const coockieStore = await cookies();
   const cookie = coockieStore.get("session")?.value;
+
   let userId = null;
+  let userData = null;
+  let userDataToPass = {};
   if (cookie) {
     try {
       const session = await decrypt(cookie);
@@ -29,13 +31,20 @@ export default async function Home() {
       },
     });
     const result = await response.json();
-    userId = result.data;
+    userData = result.data;
+
+    const { user_id, created_at, last_login, ...rest } = userData;
+    for (const key in rest) {
+      if (rest[key] != null && rest[key] !== undefined) {
+        userDataToPass[key] = rest[key];
+      }
+    }
   }
   return (
-    <div className="min-h-screen flex flex-col justify-around bg-background">
-      <Header userId={userId}></Header>
+    <div className="h-dvh	flex flex-col justify-around bg-background">
+      <Header userData={userDataToPass}></Header>
       <main className="h-[80dvh] flex justify-center p-4">
-        <ChatLayoutServer />
+        <ChatLayoutServer userData={userDataToPass} />
       </main>
       <Footer />
     </div>

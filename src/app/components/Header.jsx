@@ -1,6 +1,6 @@
 "use client";
 import Logout from "./Logout";
-export default function Header({ children, userId, className = "", ...props }) {
+export default function Header({ children, userData, className = "", ...props }) {
   return (
     <>
       {/* font styles */}
@@ -22,7 +22,7 @@ export default function Header({ children, userId, className = "", ...props }) {
         {...props}
       >
         <h1 className="honk-text text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl">Encrypted Chat</h1>
-        <p> {userId.email}</p>
+        <p> {userData.email}</p>
         {/*{user_id, email, display_name, google_id, profile_picture_url, created_at, last_login}) */}
         <Logout className="">
           <svg
