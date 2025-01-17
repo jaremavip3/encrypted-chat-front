@@ -27,7 +27,7 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:3000/api/message?limit=${limitOfMessages}&lastTimestamp=${
+          `https://encrypted-chat-front.vercel.app/api/message?limit=${limitOfMessages}&lastTimestamp=${
             lastElementTimestamp ? lastElementTimestamp : ""
           }`,
           {
