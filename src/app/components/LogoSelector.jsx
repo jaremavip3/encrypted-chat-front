@@ -31,12 +31,25 @@ export const LogoIcon = ({ fill = "currentColor", size, height, width, ...props 
 export default function LogoSelector({ onLogoSelect }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [avatarPath, setAvatarPath] = useState("/images/avatars/placeholder.png");
+  const [isAvatarSelected, setIsAvatarSelected] = useState(false);
+
+  const handleAvatarSelect = (arg) => {
+    setAvatarPath(arg);
+    setIsAvatarSelected(true);
+    onLogoSelect(avatarPath);
+  };
 
   return (
     <>
-      <Button onPress={onOpen} isIconOnly aria-label="Take a photo" color="warning" variant="faded">
-        <LogoIcon className="hover:fill-white rounded-full bg-background border-2 border-solid border-border_color " />
-      </Button>
+      {!isAvatarSelected ? (
+        <Button onPress={onOpen} isIconOnly aria-label="Take a photo" color="warning" variant="faded">
+          <LogoIcon className="hover:fill-white rounded-full bg-background border-2 border-solid border-border_color " />
+        </Button>
+      ) : (
+        <Button isIconOnly onPress={onOpen} className="p-0 min-w-0 hover:scale-110 duration-300">
+          <Avatar alt="Selected avatar" src={avatarPath} />
+        </Button>
+      )}
 
       <Modal
         className="bg-background text-white border-2 border-solid border-border_color  mx-4"
@@ -47,7 +60,7 @@ export default function LogoSelector({ onLogoSelect }) {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 ">Select Logo</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 items-center">Select Logo</ModalHeader>
               <ModalBody className="flex flex-wrap flex-row gap-8 justify-center items-center">
                 {avatarsArray.map((avatar) => {
                   return (
@@ -67,7 +80,8 @@ export default function LogoSelector({ onLogoSelect }) {
                         color="warning"
                         variant="faded"
                         onPress={() => {
-                          onLogoSelect(avatar.image);
+                          handleAvatarSelect(avatar.image);
+                          onClose();
                         }}
                       >
                         <Avatar key={avatar.id} alt={avatar.name} src={avatar.image} />
@@ -79,9 +93,6 @@ export default function LogoSelector({ onLogoSelect }) {
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
                 </Button>
               </ModalFooter>
             </>

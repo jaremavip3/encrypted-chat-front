@@ -30,13 +30,16 @@ export default async function Home() {
         "Content-Type": "application/json",
       },
     });
-    const result = await response.json();
-    userData = result.data;
-
-    const { created_at, last_login, ...rest } = userData;
-    for (const key in rest) {
-      if (rest[key] != null && rest[key] !== undefined) {
-        userDataToPass[key] = rest[key];
+    if (!response.ok) {
+      console.error(`Failed to fetch user data: ${response.status}`);
+    } else {
+      const result = await response.json();
+      userData = result.data;
+      const { created_at, last_login, ...rest } = userData;
+      for (const key in rest) {
+        if (rest[key] != null && rest[key] !== undefined) {
+          userDataToPass[key] = rest[key];
+        }
       }
     }
   }
