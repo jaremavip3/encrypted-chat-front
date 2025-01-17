@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import Avatar from "./Avatar";
 import { avatarsArray } from "./Avatar"; //id, name, image
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const LogoIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
   return (
@@ -36,8 +36,10 @@ export default function LogoSelector({ onLogoSelect }) {
   const handleAvatarSelect = (arg) => {
     setAvatarPath(arg);
     setIsAvatarSelected(true);
-    onLogoSelect(avatarPath);
   };
+  useEffect(() => {
+    onLogoSelect(avatarPath);
+  }, [avatarPath, onLogoSelect]);
 
   return (
     <>

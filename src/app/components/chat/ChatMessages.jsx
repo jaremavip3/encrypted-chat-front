@@ -23,11 +23,12 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
     if (!isLastElementVisible || loading) {
       return;
     }
+    //API TO BE UPDATED_________________________________https://encrypted-chat-front.vercel.app/
     const fetchMessages = async () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://encrypted-chat-front.vercel.app/api/message?limit=${limitOfMessages}&lastTimestamp=${
+          `http://localhost:3000/api/message?limit=${limitOfMessages}&lastTimestamp=${
             lastElementTimestamp ? lastElementTimestamp : ""
           }`,
           {
