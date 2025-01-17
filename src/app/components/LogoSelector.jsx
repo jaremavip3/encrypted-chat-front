@@ -1,5 +1,17 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Tooltip,
+} from "@heroui/react";
 import Image from "next/image";
+import Avatar from "./Avatar";
+import { avatarsArray } from "./Avatar"; //id, name, image
+import { useState } from "react";
 
 export const LogoIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
   return (
@@ -16,8 +28,9 @@ export const LogoIcon = ({ fill = "currentColor", size, height, width, ...props 
   );
 };
 
-export default function LogoSelector() {
+export default function LogoSelector({ onLogoSelect }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [avatarPath, setAvatarPath] = useState("/images/avatars/placeholder.png");
 
   return (
     <>
@@ -26,7 +39,7 @@ export default function LogoSelector() {
       </Button>
 
       <Modal
-        className="bg-background text-white border-2 border-solid border-border_color"
+        className="bg-background text-white border-2 border-solid border-border_color  mx-4"
         backdrop="blur"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -35,8 +48,33 @@ export default function LogoSelector() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 ">Select Logo</ModalHeader>
-              <ModalBody className="flex flex-wrap gap-2">
-                <Image src="/images/avatars/bear.png" alt="Bear Logo" fill className="object-contain p-2" />
+              <ModalBody className="flex flex-wrap flex-row gap-8 justify-center items-center">
+                {avatarsArray.map((avatar) => {
+                  return (
+                    <Tooltip
+                      key={avatar.id + 1}
+                      content={avatar.name}
+                      showArrow={true}
+                      closeDelay={500}
+                      delay={100}
+                      className="px-2 py-1"
+                    >
+                      <Button
+                        className="focus:scale-125 hover:scale-125 duration-500"
+                        key={avatar.id}
+                        isIconOnly
+                        aria-label="Logo button"
+                        color="warning"
+                        variant="faded"
+                        onPress={() => {
+                          onLogoSelect(avatar.image);
+                        }}
+                      >
+                        <Avatar key={avatar.id} alt={avatar.name} src={avatar.image} />
+                      </Button>
+                    </Tooltip>
+                  );
+                })}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

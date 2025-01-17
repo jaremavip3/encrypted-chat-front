@@ -52,6 +52,7 @@ export async function register(prevState, formData) {
       email: formData.get("email"),
       password: formData.get("password1"),
       displayName: formData.get("name"),
+      profilePicture: formData.get("logo"),
     };
 
     const response = await fetch(`${API_BASE_URL}/api/users/register`, {

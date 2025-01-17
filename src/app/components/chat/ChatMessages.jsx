@@ -2,6 +2,7 @@ import ChatMessage from "./ChatMessage";
 import { useEffect, useState, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import formatTimestamp from "../../../../utils/helper_functions.js/formatData";
+import socket from "../../../../utils/socket";
 
 export default function ChatMessages({ userData, onLoadMore, isCollapsed, children, messages, className = "" }) {
   const [allMessages, setAllMessages] = useState([]);
@@ -48,15 +49,6 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
         setAllMessages((prevMessages) => [...prevMessages, ...data.data]);
         const lastFetchedTimestamp = data.data[data.data.length - 1]?.created_at;
         setLastElementTimestamp(lastFetchedTimestamp ? formatTimestamp(lastFetchedTimestamp) : null);
-
-        // const dataBeforeFormatting = data.data[data.data.length - 1].created_at;
-        // setLastElementTimestamp(formatTimestamp(dataBeforeFormatting));
-        console.log("1 Fetched messages: ", data.data);
-        console.log("2 Updated allMessages: ", [...allMessages, ...data.data]);
-        console.log("3 allMessages: ", allMessages);
-        console.log("4 data.data: ", data.data);
-        console.log("5 lastFetchedTimestamp: ", lastFetchedTimestamp);
-        console.log("6 lastElementTimestamp: ", lastElementTimestamp);
       } catch (error) {
         console.error("Failed to fetch messages:", error);
       } finally {
@@ -67,6 +59,42 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
     fetchMessages(); // Fetch messages once when the component mounts
   }, [isLastElementVisible]);
 
+  function handleDelete(userId, messageId) {
+    if (userData.user_id !== userId) return;
+    const previousMessages = [...allMessages];
+    console.log(userData);
+    const messageToDeleteData = {
+      user_id: userData.user_id,
+      message_id: messageId,
+    };
+    setAllMessages((prevMessages) => prevMessages.filter((message) => message.message_id !== messageId));
+    socket.emit("delete-message", messageToDeleteData);
+
+    socket.once("message-error", (error) => {
+      console.error("Failed to delete message:", error);
+      // Rollback to previous state
+      setAllMessages(previousMessages);
+    });
+  }
+
+  useEffect(() => {
+    socket.on("receive-message", (newMessage) => {
+      console.log("newMessage send back from server: ", newMessage);
+      setAllMessages((prevMessages) => [newMessage, ...prevMessages]);
+    });
+    socket.on("message-error", (error) => {
+      console.error("Socket error:", error);
+    });
+    socket.on("message-deleted", (deletedMessage) => {
+      console.log("deletedMessage: ", deletedMessage);
+    });
+    return () => {
+      socket.off("receive-message");
+      socket.off("message-deleted");
+      socket.off("message-error");
+    };
+  }, []);
+
   return (
     <div className={`overflow-y-auto flex-1 flex flex-col-reverse `}>
       {allMessages.map((message) => {
@@ -76,6 +104,7 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
           .toString()
           .padStart(2, "0")} ${date.toLocaleString("default", { month: "short" })} ${date.getDate()}`;
         const displayName = message?.users?.display_name || "Unknown User";
+        // console.log("3. message id: " + message.message_id);
         return (
           <ChatMessage
             isMine={userData.display_name === displayName ? true : false}
@@ -83,6 +112,10 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
             displayName={displayName}
             timeProp={formattedTime}
             isEdited={message.is_edited}
+            logo={message.users?.profile_picture_url ? message.users.profile_picture_url : undefined}
+            onDelete={handleDelete}
+            messageId={message.message_id}
+            userId={message.user_id}
           >
             {message.content}
           </ChatMessage>

@@ -1,8 +1,11 @@
 import Avatar from "../Avatar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import socket from "../../../../utils/socket";
 
 export default function ChatMessage({
   userId = "",
+  messageId = "",
+  onDelete,
   content = "",
   createdAt = "",
   isEdited = false,
@@ -11,8 +14,14 @@ export default function ChatMessage({
   isMine = false,
   isSidebarCollapsed = false,
   displayName = "Unknown User",
+  logo = "/images/avatars/placeholder.png",
   className = "",
 }) {
+  const handleDelete = () => {
+    if (!isMine) return;
+    onDelete(userId, messageId);
+  };
+
   return (
     <div
       className={` flex ${isMine ? "justify-end" : "justify-start"} }
@@ -33,7 +42,7 @@ export default function ChatMessage({
             </svg>
           </button>
         ) : (
-          <Avatar className="self-end min-w-10"></Avatar>
+          <Avatar src={logo} className="self-end min-w-10" />
         )}
         <div
           className={`flex flex-col  gap-1  p-3 flex-1 break-words ${
@@ -49,11 +58,31 @@ export default function ChatMessage({
           <div className={` py-2.5 break-all whitespace-pre-wrap  ${isMine ? "text-my_text" : "text-text "}`}>
             {children}
           </div>
-          <div className={` text-sm ${isMine ? "text-my_text_secondary" : "text-text_secondary"}`}>delivered</div>
+          <div
+            className={` flex flex-row justify-between items-center text-sm ${
+              isMine ? "text-my_text_secondary" : "text-text_secondary"
+            }`}
+          >
+            delivered
+            {isMine && (
+              <button onClick={handleDelete} type="button">
+                <svg
+                  className="rounded-full  hover:fill-button_hover hover:bg-slate-300  focus:fill-button_hover "
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#a1a1aa"
+                >
+                  <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
         {isMine ? (
           <>
-            <Avatar className="self-end min-w-10"></Avatar>
+            <Avatar src={logo} className="self-end min-w-10" />
           </>
         ) : (
           <button className="group ">

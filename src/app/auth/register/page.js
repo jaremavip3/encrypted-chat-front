@@ -9,6 +9,11 @@ export default function RegisterPage() {
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [isMatch, setIsMatch] = useState(true);
+  const [selectedLogoPath, setSelectedLogoPath] = useState("/images/avatars/placeholder.png");
+  const handleLogoSelect = (path) => {
+    setSelectedLogoPath(path);
+    console.log(path);
+  };
 
   function handlePasswordChange1(value) {
     setPassword1(value);
@@ -27,6 +32,7 @@ export default function RegisterPage() {
       setIsMatch(false);
       return;
     }
+
     setIsMatch(true);
   }
   const router = useRouter();
@@ -103,11 +109,12 @@ export default function RegisterPage() {
             className="p-4 h-12 text-text rounded-3xl bg-background border-2 border-solid border-border_color focus:border-my_text_background focus:outline-none"
           ></input>
         </div>
+        <input type="hidden" name="logo" id="logo" value={selectedLogoPath} />
         <div className="flex flex-col gap-2 justify-center items-center">
           <label htmlFor="name" className="text-gray-300 pl-2 ">
             Choose logo
           </label>
-          <LogoSelector />
+          <LogoSelector onLogoSelect={handleLogoSelect} />
         </div>
         <button
           type="submit"

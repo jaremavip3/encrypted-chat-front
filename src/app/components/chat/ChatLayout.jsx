@@ -14,7 +14,6 @@ import socket from "../../../../utils/socket";
 
 export default function ChatLayout({ userData, className = "", defaultLayout = [15, 85], ...props }) {
   const [isCollapsed, setIsCollapsed] = useState(false); // For sidebar collapse
-  const [messages, setMessages] = useState([]); //  For message list
   const [message, setMessage] = useState(""); // For message input
   const [currentUser, setCurrentUser] = useState(null); //  For user identification
 
@@ -29,69 +28,34 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
     setIsCollapsed(false);
   }
 
-  // // Message handling
-  // useEffect(() => {
-  //   // Load initial messages
-  //   socket.emit("load-new-messages");
+  // Send message function
+  const sendMessage = () => {
+    if (!message.trim()) return;
 
-  //   function onNewMessagesLoaded(loadedMessages) {
-  //     setMessages(loadedMessages);
-  //   }
+    const messageData = {
+      userId: userData.user_id,
+      content: message,
+      // created_at: new Date().toISOString(),
+    };
 
-  //   function onReceiveMessage(newMessage) {
-  //     setMessages((prev) => [newMessage, ...prev]);
-  //   }
-  //   function onMessageError(error) {
-  //     console.error("Message error:", error?.error || error?.message || error);
-  //   }
-  //   socket.on("new-messages-loaded", onNewMessagesLoaded);
-  //   socket.on("receive-message", onReceiveMessage);
-  //   socket.on("message-error", onMessageError);
+    socket.emit("send-message", messageData);
+    setMessage("");
+  };
+  const [activeUsers, setActiveUsers] = useState([]);
+  useEffect(() => {
+    if (userData) {
+      console.log("Connecting with userData:", userData);
+      socket.emit("user-connected", userData);
+    }
 
-  //   return () => {
-  //     socket.off("new-messages-loaded", onNewMessagesLoaded);
-  //     socket.off("receive-message", onReceiveMessage);
-  //     socket.off("message-error", onMessageError);
-  //   };
-  // }, []);
-
-  // // Send message function
-  // const sendMessage = () => {
-  //   if (!message.trim()) return;
-
-  //   const messageData = {
-  //     userId: currentUser?.id || socket.id,
-  //     content: message,
-  //     // created_at: new Date().toISOString(),
-  //   };
-
-  //   socket.emit("send-message", messageData);
-  //   const futureMessage = {
-  //     message_id: Date.now(),
-  //     content: message,
-  //     created_at: new Date().toISOString(),
-  //     senderId: socket.id,
-  //     users: {
-  //       display_name: currentUser?.display_name || "Me",
-  //     },
-  //   };
-  //   setMessages((prev) => [futureMessage, ...prev]);
-  //   setMessage("");
-  // };
-
-  // // Load older messages on scroll
-  // const loadOlderMessagesOnScroll = () => {
-  //   if (messages.length === 0) return;
-
-  //   const oldestMessage = messages[messages.length - 1];
-  //   socket.once("old-messages-loaded", (olderMessages) => {
-  //     setMessages((prev) => [...prev, ...olderMessages]);
-  //   });
-  //   socket.emit("load-old-messages", {
-  //     lastTimestamp: oldestMessage.created_at,
-  //   });
-  // };
-
+    socket.on("users-update", (users) => {
+      console.log("Received users update:", users);
+      setActiveUsers(users);
+    });
+    return () => {
+      socket.off("users-update");
+    };
+  }, [userData]);
   return (
     <div
       className={`flex  text-text border-2 border-border_color rounded-2xl min-w-0 sm:w-6/12${className}`}
@@ -110,13 +74,12 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
         >
           {isCollapsed ? (
             <div className="flex flex-col space-y-4 items-center py-4">
-              <Avatar></Avatar>
-              <Avatar></Avatar>
-              <Avatar></Avatar>
-              <Avatar></Avatar>
+              {activeUsers.map((user) => {
+                return <Avatar src={user.profile_picture_url} alt={user.display_name}></Avatar>;
+              })}
             </div>
           ) : (
-            <ChatSidebar></ChatSidebar>
+            <ChatSidebar userData={userData}></ChatSidebar>
           )}
         </Panel>
 
@@ -163,30 +126,25 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
             <ChatMessages
               userData={userData}
               className="flex-1 overflow-hidden"
-              // messages={messages}
-              // onLoadMore={loadOlderMessagesOnScroll}
-
               isSidebarCollapsed={isCollapsed}
             ></ChatMessages>
 
             <ChatInput>
               <Input
-                // value={message}
+                value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    // sendMessage();
+                    sendMessage();
                   }
                 }}
                 className="w-full"
                 placeholder="Type a message..."
               ></Input>
-              <Button
-              // onClick={sendMessage}
-              >
+              <Button onClick={sendMessage}>
                 <svg
                   className="fill-svg_color"
                   xmlns="http://www.w3.org/2000/svg"

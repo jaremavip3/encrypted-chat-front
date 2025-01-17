@@ -33,7 +33,7 @@ export default async function Home() {
     const result = await response.json();
     userData = result.data;
 
-    const { user_id, created_at, last_login, ...rest } = userData;
+    const { created_at, last_login, ...rest } = userData;
     for (const key in rest) {
       if (rest[key] != null && rest[key] !== undefined) {
         userDataToPass[key] = rest[key];
