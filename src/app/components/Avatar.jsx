@@ -81,7 +81,9 @@ export const avatarsArray = [
 export default function Avatar({
   src = "/images/avatars/placeholder.png",
   alt = "Avatar placeholder",
-  className = "",
+  className = "w-8 h-8",
+  width = 512,
+  height = 512,
   ...props
 }) {
   return (
@@ -90,7 +92,7 @@ export default function Avatar({
          ${className}`}
       {...props}
     >
-      <Image width={512} height={512} className="w-10 h-10 rounded-full min-w-[40px]" src={src} alt={alt} />
+      <Image width={width} height={height} className="rounded-full " src={src} alt={alt} />
     </div>
   );
 }

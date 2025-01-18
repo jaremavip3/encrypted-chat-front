@@ -24,7 +24,7 @@ export default async function Home() {
   }
   //API TO BE UPDATED_________________________________https://encrypted-chat-front.vercel.app/
   if (userId) {
-    const response = await fetch(`http://localhost:3000/api/user?action=get_byId&id=${userId}`, {
+    const response = await fetch(`https://encrypted-chat-front.vercel.app/api/user?action=get_byId&id=${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -46,10 +46,10 @@ export default async function Home() {
   return (
     <div className="h-dvh	flex flex-col justify-around bg-background">
       <Header userData={userDataToPass}></Header>
-      <main className="h-[80dvh] flex justify-center p-4">
-        <ChatLayoutServer userData={userDataToPass} />
+      <main className="flex flex-1 justify-center p-4">
+        <ChatLayoutServer userData={userDataToPass} className="w-full" />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

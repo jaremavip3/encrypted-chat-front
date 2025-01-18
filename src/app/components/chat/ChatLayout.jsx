@@ -42,21 +42,17 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
     console.log("1. Emitting users-update: ", activeUsers);
     setMessage("");
   };
-  const [activeUsers, setActiveUsers] = useState([]);
 
+  const [activeUsers, setActiveUsers] = useState([]);
   useEffect(() => {
     if (userData) {
-      console.log("2. Connecting with userData:", userData);
+      console.log("Connecting with userData:", userData);
       socket.emit("user-connected", userData);
     }
 
     socket.on("users-update", (users) => {
-      console.log("3. Received users update:", users);
-      setActiveUsers((prevUsers) => {
-        console.log("4. Updating activeUsers from:", prevUsers, "to:", users);
-        return users;
-      });
-      console.log("5. activeUsers step2: ", activeUsers);
+      console.log("Received users update:", users);
+      setActiveUsers(users);
     });
     return () => {
       socket.off("users-update");
@@ -65,10 +61,7 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
 
   console.log("6. activeUsers step1: ", activeUsers);
   return (
-    <div
-      className={`flex  text-text border-2 border-border_color rounded-2xl min-w-0 sm:w-6/12${className}`}
-      {...props}
-    >
+    <div className={`flex w-full text-text border-2 border-border_color rounded-2xl min-w-0${className}`} {...props}>
       <PanelGroup autoSaveId="chat-layout" direction="horizontal" onLayout={onLayout}>
         <Panel
           id="sidebar-panel"
@@ -88,7 +81,7 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
               })}
             </div>
           ) : (
-            <ChatSidebar userData={userData}></ChatSidebar>
+            <ChatSidebar activeUsers={activeUsers} userData={userData}></ChatSidebar>
           )}
         </Panel>
 
@@ -116,21 +109,7 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
         {/* container for TOP, MIDDLE and BOTTOM */}
         <Panel defaultSize={defaultLayout[1]}>
           <div id="chat-container" className="flex flex-col h-full">
-            <ChatHeader>
-              {userData.display_name}
-              <Button>
-                <svg
-                  className="fill-svg_color"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                  fill="#5f6368"
-                >
-                  <path d="M420-360h120l-23-129q20-10 31.5-29t11.5-42q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 23 11.5 42t31.5 29l-23 129Zm60 280q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z" />
-                </svg>
-              </Button>
-            </ChatHeader>
+            <ChatHeader displayName={userData.display_name} />
 
             <ChatMessages
               userData={userData}

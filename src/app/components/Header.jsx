@@ -3,10 +3,17 @@ import Logout from "./Logout";
 export default function Header({ children, userData, className = "", ...props }) {
   return (
     <>
-      {/* font styles */}
-      <style jsx>{`
-        @import url("https://fonts.googleapis.com/css2?family=Honk&family=swap");
+      {/* Preload the font */}
+      <link rel="preload" href="https://fonts.googleapis.com/css2?family=Honk&display=swap" as="style" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Honk&display=swap"
+        rel="stylesheet"
+        type="text/css"
+        media="all"
+      />
 
+      {/* Inline critical styles */}
+      <style jsx>{`
         /* Honk style */
         .honk-text {
           font-family: "Honk", serif;
@@ -22,20 +29,9 @@ export default function Header({ children, userData, className = "", ...props })
         {...props}
       >
         <h1 className="honk-text text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl">Encrypted Chat</h1>
-        <p> {userData.email}</p>
+        {/* <p> {userData.email}</p> */}
         {/*{user_id, email, display_name, google_id, profile_picture_url, created_at, last_login}) */}
-        <Logout className="">
-          <svg
-            className="fill-svg_color"
-            xmlns="http://www.w3.org/2000/svg"
-            height="28px"
-            viewBox="0 -960 960 960"
-            width="28px"
-            fill="#5f6368"
-          >
-            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-          </svg>
-        </Logout>
+
         {children}
       </header>
     </>
