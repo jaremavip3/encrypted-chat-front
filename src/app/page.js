@@ -47,7 +47,7 @@ export default async function Home() {
     <div className="h-dvh	flex flex-col justify-around bg-background">
       <Header userData={userDataToPass}></Header>
       <main className="flex flex-1 justify-center p-4">
-        <ChatLayoutServer userData={userDataToPass} className="w-full" />
+        <ChatLayoutServer userData={userDataToPass} className="w-full md:w-3/6" />
       </main>
       {/* <Footer /> */}
     </div>
