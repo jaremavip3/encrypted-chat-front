@@ -42,6 +42,7 @@ export default function ChatMessage({
             </svg>
           </button>
         ) : (
+          // <Avatar alt={logo} src={logo} className="self-end w-11 h-11" />
           <Avatar src={logo} className="self-end min-w-10" />
         )}
         <div
@@ -82,6 +83,7 @@ export default function ChatMessage({
         </div>
         {isMine ? (
           <>
+            {/* <Avatar alt={logo} src={logo} className="self-end w-11 h-11" /> */}
             <Avatar src={logo} className="self-end min-w-10" />
           </>
         ) : (

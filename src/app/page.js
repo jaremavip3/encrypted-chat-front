@@ -24,7 +24,7 @@ export default async function Home() {
   }
   //API TO BE UPDATED_________________________________https://encrypted-chat-front.vercel.app/
   if (userId) {
-    const response = await fetch(`https://encrypted-chat-front.vercel.app/api/user?action=get_byId&id=${userId}`, {
+    const response = await fetch(`http://localhost:3000/api/user?action=get_byId&id=${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -28,7 +28,7 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
       try {
         setLoading(true);
         const response = await fetch(
-          `https://encrypted-chat-front.vercel.app/api/message?limit=${limitOfMessages}&lastTimestamp=${
+          `http://localhost:3000/api/message?limit=${limitOfMessages}&lastTimestamp=${
             lastElementTimestamp ? lastElementTimestamp : ""
           }`,
           {
@@ -44,6 +44,7 @@ export default function ChatMessages({ userData, onLoadMore, isCollapsed, childr
         }
         const data = await response.json();
         if (response.ok && data.data.length === 0) {
+          // console.log("All messages loaded");
           setIsAllMessagesLoaded(true);
           return;
         }
