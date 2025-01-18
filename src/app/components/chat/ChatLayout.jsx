@@ -39,25 +39,31 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
     };
 
     socket.emit("send-message", messageData);
+    console.log("1. Emitting users-update: ", activeUsers);
     setMessage("");
   };
   const [activeUsers, setActiveUsers] = useState([]);
+
   useEffect(() => {
     if (userData) {
-      console.log("Connecting with userData:", userData);
+      console.log("2. Connecting with userData:", userData);
       socket.emit("user-connected", userData);
     }
 
     socket.on("users-update", (users) => {
-      console.log("Received users update:", users);
-      setActiveUsers(users);
-      console.log("activeUsers step2: ", activeUsers);
+      console.log("3. Received users update:", users);
+      setActiveUsers((prevUsers) => {
+        console.log("4. Updating activeUsers from:", prevUsers, "to:", users);
+        return users;
+      });
+      console.log("5. activeUsers step2: ", activeUsers);
     });
     return () => {
       socket.off("users-update");
     };
   }, [userData]);
-  console.log("activeUsers step1: ", activeUsers);
+
+  console.log("6. activeUsers step1: ", activeUsers);
   return (
     <div
       className={`flex  text-text border-2 border-border_color rounded-2xl min-w-0 sm:w-6/12${className}`}
@@ -77,7 +83,7 @@ export default function ChatLayout({ userData, className = "", defaultLayout = [
           {isCollapsed ? (
             <div className="flex flex-col space-y-4 items-center py-4">
               {activeUsers.map((user) => {
-                console.log("user: ", user);
+                console.log("Rendering user:", user);
                 return <Avatar key={user.user_id} src={user.profile_picture_url} alt={user.display_name} />;
               })}
             </div>
